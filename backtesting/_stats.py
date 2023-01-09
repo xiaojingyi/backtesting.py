@@ -113,12 +113,17 @@ def compute_stats(
     annualized_return = (1 + gmean_day_return)**annual_trading_days - 1
     s.loc['Return (Ann.) [%]'] = annualized_return * 100
     s.loc['Volatility (Ann.) [%]'] = np.sqrt((day_returns.var(ddof=int(bool(day_returns.shape))) + (1 + gmean_day_return)**2)**annual_trading_days - (1 + gmean_day_return)**(2*annual_trading_days)) * 100  # noqa: E501
-    # s.loc['Return (Ann.) [%]'] = gmean_day_return * annual_trading_days * 100
-    # s.loc['Risk (Ann.) [%]'] = day_returns.std(ddof=1) * np.sqrt(annual_trading_days) * 100
+
+    # Classic Sharpe
+    s.loc['Classic Return (Ann.) [%]'] = day_returns.mean() * annual_trading_days * 100
+    s.loc['Classic Risk (Ann.) [%]'] = day_returns.std(ddof=1) * np.sqrt(annual_trading_days) * 100
+    s.loc['Classic Sharpe Ratio'] = (s.loc['Classic Return (Ann.) [%]'] - risk_free_rate) \
+            / (s.loc['Classic Risk (Ann.) [%]'] or np.nan)  # noqa: E501
 
     # Our Sharpe mismatches `empyrical.sharpe_ratio()` because they use arithmetic mean return
     # and simple standard deviation
     s.loc['Sharpe Ratio'] = (s.loc['Return (Ann.) [%]'] - risk_free_rate) / (s.loc['Volatility (Ann.) [%]'] or np.nan)  # noqa: E501
+
     # Our Sortino mismatches `empyrical.sortino_ratio()` because they use arithmetic mean return
     s.loc['Sortino Ratio'] = (annualized_return - risk_free_rate) / (np.sqrt(np.mean(day_returns.clip(-np.inf, 0)**2)) * np.sqrt(annual_trading_days))  # noqa: E501
     max_dd = -np.nan_to_num(dd.max())
