@@ -110,6 +110,8 @@ Before reporting bugs or posting to the
 [discussion board](https://github.com/kernc/backtesting.py/discussions),
 please read [contributing guidelines](CONTRIBUTING.md), particularly the section
 about crafting useful bug reports and ```` ``` ````-fencing your code. We thank you!
+jupyter not wirking:
+python3 -m pip install bokeh==2.4.3
 
 
 Alternatives
